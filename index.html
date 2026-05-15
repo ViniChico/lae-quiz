@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz de Perfil Empresarial — LAE UNISAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-deep: #0a1f44;
+    --blue-mid: #1a3a6e;
+    --blue-accent: #1e5abf;
+    --blue-light: #3b7dd8;
+    --blue-glow: #5b9eff;
+    --white: #ffffff;
+    --white-off: #f0f4ff;
+    --white-dim: rgba(255,255,255,0.08);
+    --white-border: rgba(255,255,255,0.15);
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blue-deep);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG Pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30,90,191,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 90%, rgba(91,158,255,0.15) 0%, transparent 55%),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.012) 40px,
+        rgba(255,255,255,0.012) 41px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 0 32px;
+    gap: 16px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-wrap img {
+    width: 220px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 16px rgba(91,158,255,0.25));
+  }
+
+  .header-text {
+    text-align: center;
+  }
+
+  .liga-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue-glow);
+    margin-bottom: 6px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 5vw, 30px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--white);
+    text-shadow: 0 2px 20px rgba(91,158,255,0.3);
+  }
+
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 8px auto 0;
+  }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* INTRO */
+  .intro-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--white-border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+  }
+
+  .intro-card p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.78);
+    margin-bottom: 28px;
+  }
+
+  .intro-card .highlight {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .tag {
+    background: rgba(91,158,255,0.15);
+    border: 1px solid rgba(91,158,255,0.3);
+    color: var(--blue-glow);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--blue-accent), var(--blue-light));
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 16px 44px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(30,90,191,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(30,90,191,0.7);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-bottom: 28px;
+  }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .progress-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue-glow);
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-accent), var(--blue-glow));
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--white-border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    backdrop-filter: blur(8px);
+  }
+
+  .q-number {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 3.5vw, 20px);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--white);
+    margin-bottom: 28px;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    text-align: left;
+    width: 100%;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .option-btn:hover {
+    background: rgba(91,158,255,0.12);
+    border-color: rgba(91,158,255,0.4);
+    transform: translateX(4px);
+  }
+
+  .option-btn.selected {
+    background: rgba(30,90,191,0.3);
+    border-color: var(--blue-glow);
+    box-shadow: 0 0 0 1px rgba(91,158,255,0.2);
+  }
+
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.6);
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+
+  .option-btn.selected .option-letter {
+    background: var(--blue-glow);
+    border-color: var(--blue-glow);
+    color: white;
+  }
+
+  /* NAV */
+  .q-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--white-border);
+    color: rgba(255,255,255,0.55);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.35);
+    color: white;
+  }
+
+  .btn-next {
+    background: linear-gradient(135deg, var(--blue-accent), var(--blue-light));
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 30px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .btn-next.enabled {
+    opacity: 1;
+    pointer-events: all;
+    box-shadow: 0 4px 20px rgba(30,90,191,0.45);
+  }
+
+  .btn-next.enabled:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 28px rgba(30,90,191,0.65);
+  }
+
+  /* LOADING */
+  .loading-wrap {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .spinner {
+    width: 52px;
+    height: 52px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--blue-glow);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 24px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-wrap p {
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+  }
+
+  /* RESULT */
+  .result-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--white-border);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+  }
+
+  .result-header {
+    background: linear-gradient(135deg, var(--blue-mid), var(--blue-accent));
+    padding: 36px 28px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-header::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    top: -60px;
+    right: -40px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+  }
+
+  .result-emoji {
+    font-size: 52px;
+    margin: 12px 0;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  }
+
+  .result-profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 6vw, 34px);
+    font-weight: 900;
+    color: white;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  }
+
+  .result-tagline {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    font-style: italic;
+  }
+
+  .result-body {
+    padding: 28px;
+  }
+
+  .result-description {
+    font-size: 15px;
+    line-height: 1.78;
+    color: rgba(255,255,255,0.82);
+    margin-bottom: 24px;
+  }
+
+  .traits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .trait-item {
+    background: rgba(91,158,255,0.1);
+    border: 1px solid rgba(91,158,255,0.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .trait-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .result-footer {
+    border-top: 1px solid var(--white-border);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .lae-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: auto;
+  }
+
+  .lae-badge img {
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1) opacity(0.6);
+  }
+
+  .lae-badge span {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+
+  .btn-restart {
+    background: transparent;
+    border: 1px solid var(--white-border);
+    color: rgba(255,255,255,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-restart:hover {
+    border-color: rgba(255,255,255,0.35);
+    color: white;
+  }
+
+  /* AI bubble */
+  .ai-thinking {
+    background: rgba(91,158,255,0.08);
+    border: 1px solid rgba(91,158,255,0.2);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  /* CHART */
+  .chart-section {
+    margin-top: 24px;
+    border-top: 1px solid var(--white-border);
+    padding-top: 20px;
+  }
+
+  .chart-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 14px;
+  }
+
+  .chart-bars { display: flex; flex-direction: column; gap: 10px; }
+
+  .chart-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 36px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .chart-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chart-track {
+    height: 8px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .chart-fill {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--blue-accent), var(--blue-glow));
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  .chart-fill.winner {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  }
+
+  .chart-pct {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    text-align: right;
+  }
+
+  .chart-pct.winner { color: var(--gold-light); }
+
+  @media (max-width: 480px) {
+    .traits-grid { grid-template-columns: 1fr; }
+    .question-card { padding: 24px 20px; }
+    .result-body { padding: 22px 20px; }
+    .chart-row { grid-template-columns: 100px 1fr 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo-wrap">
+      <img src="logo.png" alt="LAE Logo" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=\'font-size:28px\'>🐘</span>'">
+    </div>
+    <div class="header-text">
+      <h1>Qual é o seu<br>Perfil Empresarial?</h1>
+      <div class="divider"></div>
+    </div>
+  </header>
+
+  <!-- TELA INTRO -->
+  <div id="screen-intro" class="screen active">
+    <div class="intro-card">
+      <p>Responda <span class="highlight">10 perguntas rápidas</span> e descubra qual perfil empresarial mais combina com você.</p>
+      <div class="tag-row">
+        <span class="tag">🌟 Empreendedor Visionário</span>
+        <span class="tag">♟️ Líder Estratégico</span>
+        <span class="tag">🎨 Inovador Criativo</span>
+        <span class="tag">📊 Executor Analítico</span>
+      </div>
+      <button class="btn-primary" onclick="startQuiz()">Começar o Quiz →</button>
+    </div>
+  </div>
+
+  <!-- TELA QUIZ -->
+  <div id="screen-quiz" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span class="progress-label">Progresso</span>
+        <span class="progress-count" id="prog-count">1 / 10</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill" style="width:10%"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="q-number" id="q-number">Questão 01</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options-list" id="options-list"></div>
+    </div>
+
+    <div class="q-nav">
+      <button class="btn-ghost" onclick="prevQuestion()">← Anterior</button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Próxima →</button>
+    </div>
+  </div>
+
+  <!-- TELA LOADING -->
+  <div id="screen-loading" class="screen">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <p>Analisando seu perfil empresarial...</p>
+    </div>
+  </div>
+
+  <!-- TELA RESULTADO -->
+  <div id="screen-result" class="screen">
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-label">Seu perfil é</div>
+        <div class="result-emoji" id="result-emoji"></div>
+        <div class="result-profile-name" id="result-name"></div>
+        <div class="result-tagline" id="result-tagline"></div>
+      </div>
+      <div class="result-body">
+        <p class="result-description" id="result-description"></p>
+        <div class="traits-grid" id="result-traits"></div>
+        <div class="chart-section">
+          <div class="chart-label">Sua composição de perfil</div>
+          <div class="chart-bars" id="chart-bars"></div>
+        </div>
+      </div>
+      <div class="result-footer">
+        <div class="lae-badge">
+          <img src="logo.png" alt="LAE Liga Acadêmica Empresarial" onerror="this.style.display='none'">
+        </div>
+        <button class="btn-restart" onclick="restartQuiz()">↺ Refazer</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =============================================
+// PERFIS PRINCIPAIS
+// =============================================
+const PERFIS = {
+  visionario: {
+    nome: "Empreendedor Visionário",
+    emoji: "🌟",
+    tagline: "Você é ousado, sonhador e pensa no futuro.",
+    descricao: "Você possui visão de futuro, ousadia e espírito empreendedor. Está sempre buscando novas oportunidades e grandes conquistas. No ambiente empresarial, você é aquele que enxerga o que os outros ainda não conseguem ver — e tem coragem de agir sobre isso. A LAE foi criada para impulsionar lideranças como a sua.",
+    tracos: ["Visão de futuro", "Ousadia", "Espírito empreendedor", "Identificação de oportunidades", "Inovação em grande escala", "Ambição"]
+  },
+  lider: {
+    nome: "Líder Estratégico",
+    emoji: "♟️",
+    tagline: "Você organiza, decide e conduz equipes ao resultado.",
+    descricao: "Você tem forte perfil de liderança, sabe organizar pessoas e tomar decisões importantes com confiança. Em qualquer grupo, sua presença naturalmente orienta o caminho. Você pensa estrategicamente, age com segurança e transforma times em máquinas de resultado. Exatamente o perfil que o mercado empresarial mais valoriza.",
+    tracos: ["Liderança natural", "Tomada de decisão", "Organização de equipes", "Pensamento estratégico", "Confiança", "Foco em resultado"]
+  },
+  criativo: {
+    nome: "Inovador Criativo",
+    emoji: "🎨",
+    tagline: "Você pensa fora da caixa e transforma ideias em soluções únicas.",
+    descricao: "Sua criatividade é seu maior diferencial. Você gosta de pensar fora da caixa e transformar ideias em soluções únicas. Onde outros veem limites, você enxerga possibilidades. No mundo dos negócios, perfis como o seu são o motor da inovação — essenciais para empresas que querem se reinventar e crescer.",
+    tracos: ["Criatividade", "Pensamento original", "Espontaneidade", "Soluções inovadoras", "Visão diferenciada", "Adaptabilidade"]
+  },
+  analista: {
+    nome: "Executor Analítico",
+    emoji: "📊",
+    tagline: "Você é racional, detalhista e transforma planejamento em resultados.",
+    descricao: "Você é racional, estratégico e extremamente observador. Seu foco em planejamento e eficiência faz toda a diferença nos resultados. Você raramente erra porque raramente age sem análise prévia. No mercado empresarial, sua precisão e metodologia são fundamentais para que as decisões sejam sólidas e bem embasadas.",
+    tracos: ["Raciocínio lógico", "Atenção aos detalhes", "Planejamento", "Eficiência", "Foco em processos", "Confiabilidade"]
+  }
+};
+
+// =============================================
+// PERFIS HÍBRIDOS (EMPATE)
+// =============================================
+const PERFIS_HIBRIDOS = {
+  "visionario+criativo": {
+    nome: "Empreendedor Disruptivo",
+    emoji: "🚀",
+    tagline: "Você sonha grande e cria o caminho para chegar lá.",
+    descricao: "Você combina a ousadia do empreendedor com a criatividade do inovador — uma combinação explosiva. Você não apenas enxerga o futuro, mas também sabe criar soluções únicas para chegar até ele. No mundo dos negócios, esse perfil é sinônimo de disrupção e transformação real.",
+    tracos: ["Visão disruptiva", "Criatividade estratégica", "Inovação em escala", "Ousadia criativa", "Empreendedorismo", "Originalidade"]
+  },
+  "visionario+lider": {
+    nome: "CEO Nato",
+    emoji: "👑",
+    tagline: "Você nasceu para liderar grandes transformações.",
+    descricao: "Você une a visão de futuro do empreendedor com a capacidade de liderança estratégica. Isso é raro — e valiosíssimo. Você consegue tanto inspirar quanto executar, tanto sonhar quanto fazer acontecer. O mercado chama esse perfil de CEO nato.",
+    tracos: ["Liderança visionária", "Visão estratégica", "Inspiração de equipes", "Tomada de decisão ousada", "Ambição com método", "Alta performance"]
+  },
+  "lider+analista": {
+    nome: "Gestor Estratégico",
+    emoji: "🏛️",
+    tagline: "Você lidera com dados, decisão e precisão.",
+    descricao: "Você combina liderança com análise — uma dupla que gera resultados consistentes. Você não apenas comanda, mas comanda com embasamento. Suas decisões são estratégicas e bem fundamentadas. Esse perfil é muito valorizado em posições de gestão e alta liderança empresarial.",
+    tracos: ["Liderança analítica", "Gestão orientada a dados", "Decisão estratégica", "Organização", "Confiança com método", "Eficiência"]
+  },
+  "criativo+analista": {
+    nome: "Inovador Inteligente",
+    emoji: "🔬",
+    tagline: "Você cria com propósito e executa com precisão.",
+    descricao: "Você une criatividade com lógica — uma combinação que transforma ideias em soluções reais e eficientes. Você não apenas pensa diferente, mas sabe validar e estruturar suas ideias para que funcionem na prática. No mercado, esse perfil é o sonho de qualquer empresa inovadora.",
+    tracos: ["Criatividade aplicada", "Pensamento crítico", "Inovação estruturada", "Análise criativa", "Solução de problemas", "Eficiência criativa"]
+  }
+};
+
+// =============================================
+// PERGUNTAS
+// =============================================
+const QUESTOES = [
+  {
+    texto: "Em um trabalho em grupo, você normalmente:",
+    opcoes: [
+      { texto: "Pensa em ideias grandes e no impacto futuro.", perfil: "visionario" },
+      { texto: "Organiza as pessoas e divide as tarefas.", perfil: "lider" },
+      { texto: "Sugere soluções diferentes e criativas.", perfil: "criativo" },
+      { texto: "Analisa os detalhes para evitar erros.", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "O que mais te motiva em um projeto?",
+    opcoes: [
+      { texto: "Transformar algo grande em realidade.", perfil: "visionario" },
+      { texto: "Conduzir a equipe ao sucesso.", perfil: "lider" },
+      { texto: "Criar algo novo e original.", perfil: "criativo" },
+      { texto: "Fazer tudo funcionar perfeitamente.", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Quando surge um problema inesperado, você:",
+    opcoes: [
+      { texto: "Enxerga uma oportunidade de crescimento.", perfil: "visionario" },
+      { texto: "Assume o controle da situação.", perfil: "lider" },
+      { texto: "Busca uma solução inovadora.", perfil: "criativo" },
+      { texto: "Analisa as causas antes de agir.", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Qual dessas frases mais combina com você?",
+    opcoes: [
+      { texto: "\"O futuro pertence a quem ousa.\"", perfil: "visionario" },
+      { texto: "\"Uma boa liderança muda tudo.\"", perfil: "lider" },
+      { texto: "\"Criatividade é minha maior força.\"", perfil: "criativo" },
+      { texto: "\"Planejamento evita problemas.\"", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Em uma empresa, qual área mais chama sua atenção?",
+    opcoes: [
+      { texto: "Expansão e novos negócios.", perfil: "visionario" },
+      { texto: "Gestão de equipes e liderança.", perfil: "lider" },
+      { texto: "Marketing e criação.", perfil: "criativo" },
+      { texto: "Finanças e planejamento.", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Como seus amigos costumam te definir?",
+    opcoes: [
+      { texto: "Sonhador(a) e ambicioso(a).", perfil: "visionario" },
+      { texto: "Confiante e líder natural.", perfil: "lider" },
+      { texto: "Criativo(a) e diferente.", perfil: "criativo" },
+      { texto: "Inteligente e observador(a).", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Qual dessas atitudes você mais valoriza?",
+    opcoes: [
+      { texto: "Coragem para inovar.", perfil: "visionario" },
+      { texto: "Capacidade de liderar.", perfil: "lider" },
+      { texto: "Liberdade para criar.", perfil: "criativo" },
+      { texto: "Organização e eficiência.", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Se você abrisse uma empresa, qual seria seu foco principal?",
+    opcoes: [
+      { texto: "Crescer e revolucionar o mercado.", perfil: "visionario" },
+      { texto: "Construir uma equipe forte.", perfil: "lider" },
+      { texto: "Desenvolver ideias únicas.", perfil: "criativo" },
+      { texto: "Garantir estabilidade e bons processos.", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Qual dessas habilidades você considera mais importante?",
+    opcoes: [
+      { texto: "Visão de futuro.", perfil: "visionario" },
+      { texto: "Liderança.", perfil: "lider" },
+      { texto: "Criatividade.", perfil: "criativo" },
+      { texto: "Estratégia e análise.", perfil: "analista" }
+    ]
+  },
+  {
+    texto: "Em uma decisão importante, você normalmente:",
+    opcoes: [
+      { texto: "Pensa no potencial a longo prazo.", perfil: "visionario" },
+      { texto: "Avalia como liderar melhor a situação.", perfil: "lider" },
+      { texto: "Busca caminhos diferentes dos comuns.", perfil: "criativo" },
+      { texto: "Analisa dados e possibilidades antes de decidir.", perfil: "analista" }
+    ]
+  }
+];
+
+// =============================================
+// LÓGICA DO QUIZ
+// =============================================
+let currentQ = 0;
+let respostas = {};
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function startQuiz() {
+  currentQ = 0;
+  respostas = {};
+  renderQuestion();
+  showScreen('quiz');
+}
+
+function renderQuestion() {
+  const q = QUESTOES[currentQ];
+  document.getElementById('q-number').textContent = `Questão ${String(currentQ + 1).padStart(2, '0')}`;
+  document.getElementById('q-text').textContent = q.texto;
+  document.getElementById('prog-count').textContent = `${currentQ + 1} / ${QUESTOES.length}`;
+  document.getElementById('prog-fill').style.width = `${((currentQ + 1) / QUESTOES.length) * 100}%`;
+
+  const list = document.getElementById('options-list');
+  list.innerHTML = '';
+  const letras = ['A', 'B', 'C', 'D'];
+
+  q.opcoes.forEach((op, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (respostas[currentQ] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="option-letter">${letras[i]}</span><span>${op.texto}</span>`;
+    btn.onclick = () => selectOption(i);
+    list.appendChild(btn);
+  });
+
+  updateNextBtn();
+  document.querySelector('.btn-ghost').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+}
+
+function selectOption(idx) {
+  respostas[currentQ] = idx;
+  document.querySelectorAll('.option-btn').forEach((b, i) => b.classList.toggle('selected', i === idx));
+  updateNextBtn();
+}
+
+function updateNextBtn() {
+  const btn = document.getElementById('btn-next');
+  btn.classList.toggle('enabled', respostas[currentQ] !== undefined);
+  btn.textContent = currentQ === QUESTOES.length - 1 ? 'Ver Resultado →' : 'Próxima →';
+}
+
+function nextQuestion() {
+  if (respostas[currentQ] === undefined) return;
+  if (currentQ < QUESTOES.length - 1) { currentQ++; renderQuestion(); }
+  else calcularResultado();
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+function calcularResultado() {
+  showScreen('loading');
+  setTimeout(() => {
+    const pontos = { visionario: 0, lider: 0, criativo: 0, analista: 0 };
+    Object.entries(respostas).forEach(([qIdx, opIdx]) => {
+      pontos[QUESTOES[parseInt(qIdx)].opcoes[opIdx].perfil]++;
+    });
+
+    const sorted = Object.entries(pontos).sort((a, b) => b[1] - a[1]);
+    const top1 = sorted[0], top2 = sorted[1];
+
+    let perfilFinal, chaveExibida;
+
+    if (top1[1] === top2[1]) {
+      // Empate — tenta perfil híbrido
+      const chaveHibrida = [top1[0], top2[0]].sort().join('+');
+      const chaveHibridaAlt = [top2[0], top1[0]].sort().join('+');
+      const hibrido = PERFIS_HIBRIDOS[chaveHibrida] || PERFIS_HIBRIDOS[chaveHibridaAlt];
+      if (hibrido) { perfilFinal = hibrido; chaveExibida = null; }
+      else { perfilFinal = PERFIS[top1[0]]; chaveExibida = top1[0]; }
+    } else {
+      perfilFinal = PERFIS[top1[0]]; chaveExibida = top1[0];
+    }
+
+    mostrarResultado(perfilFinal, pontos, chaveExibida);
+  }, 1800);
+}
+
+function mostrarResultado(perfil, pontos, chaveVencedor) {
+  document.getElementById('result-emoji').textContent = perfil.emoji;
+  document.getElementById('result-name').textContent = perfil.nome;
+  document.getElementById('result-tagline').textContent = perfil.tagline;
+  document.getElementById('result-description').textContent = perfil.descricao;
+
+  document.getElementById('result-traits').innerHTML = perfil.tracos.map(t => `
+    <div class="trait-item"><span class="trait-dot"></span>${t}</div>
+  `).join('');
+
+  // Gráfico de barras
+  const total = Object.values(pontos).reduce((a, b) => a + b, 0) || 1;
+  const labels = { visionario: '🌟 Visionário', lider: '♟️ Líder', criativo: '🎨 Criativo', analista: '📊 Analítico' };
+  const sorted = Object.entries(pontos).sort((a, b) => b[1] - a[1]);
+
+  document.getElementById('chart-bars').innerHTML = sorted.map(([k, v]) => {
+    const pct = Math.round((v / total) * 100);
+    const isWinner = k === chaveVencedor;
+    return `
+      <div class="chart-row">
+        <span class="chart-name">${labels[k]}</span>
+        <div class="chart-track"><div class="chart-fill ${isWinner ? 'winner' : ''}" data-pct="${pct}"></div></div>
+        <span class="chart-pct ${isWinner ? 'winner' : ''}">${pct}%</span>
+      </div>`;
+  }).join('');
+
+  showScreen('result');
+
+  // Anima barras após render
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.querySelectorAll('.chart-fill').forEach(el => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    }, 120);
+  });
+}
+
+function restartQuiz() { startQuiz(); }
+</script>
+</body>
+</html>
