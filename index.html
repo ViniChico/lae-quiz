@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz de Perfil Empresarial — LAE UNISAL</title>
+<link rel="icon" type="image/png" href="icon elefante.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -117,7 +118,91 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* INTRO */
+  /* SLIDE TRANSITIONS */
+  .question-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--white-border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+  }
+
+  .question-card.slide-out-left {
+    animation: slideOutLeft 0.22s ease forwards;
+  }
+  .question-card.slide-in-right {
+    animation: slideInRight 0.25s ease forwards;
+  }
+  .question-card.slide-out-right {
+    animation: slideOutRight 0.22s ease forwards;
+  }
+  .question-card.slide-in-left {
+    animation: slideInLeft 0.25s ease forwards;
+  }
+
+  @keyframes slideOutLeft {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(-40px); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideOutRight {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(40px); }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* OPTION PULSE FEEDBACK */
+  @keyframes optionPulse {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+  .option-btn.pulse {
+    animation: optionPulse 0.25s ease;
+  }
+
+  /* NAME INPUT */
+  .name-wrap {
+    margin-bottom: 24px;
+  }
+
+  .name-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 10px;
+  }
+
+  .name-input {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .name-input::placeholder { color: rgba(255,255,255,0.3); }
+
+  .name-input:focus {
+    border-color: var(--blue-glow);
+    background: rgba(91,158,255,0.08);
+  }
   .intro-card {
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--white-border);
@@ -222,14 +307,7 @@
     transition: width 0.5s cubic-bezier(.4,0,.2,1);
   }
 
-  /* QUESTION CARD */
-  .question-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--white-border);
-    border-radius: 20px;
-    padding: 32px 28px;
-    backdrop-filter: blur(8px);
-  }
+  /* QUESTION CARD content styles */
 
   .q-number {
     font-size: 11px;
@@ -602,15 +680,167 @@
 
   .chart-pct.winner { color: var(--gold-light); }
 
-  @media (max-width: 480px) {
-    .traits-grid { grid-template-columns: 1fr; }
-    .question-card { padding: 24px 20px; }
-    .result-body { padding: 22px 20px; }
-    .chart-row { grid-template-columns: 100px 1fr 32px; }
+  /* CONFETTI */
+  #confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* TELA SOCIAL */
+  .social-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--white-border);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    text-align: center;
+  }
+
+  .social-header {
+    background: linear-gradient(135deg, var(--blue-mid), var(--blue-accent));
+    padding: 32px 28px;
+  }
+
+  .social-header img {
+    width: 160px;
+    height: auto;
+    filter: brightness(0) invert(1);
+    margin-bottom: 12px;
+  }
+
+  .social-header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+  }
+
+  .social-body {
+    padding: 28px 24px;
+  }
+
+  .social-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .social-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 24px;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .social-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 1px solid var(--white-border);
+    background: rgba(255,255,255,0.04);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .social-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3);
+    transform: translateX(4px);
+  }
+
+  .social-btn .s-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .s-icon.ig { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+  .s-icon.li { background: #0077b5; }
+  .s-icon.wa { background: #25d366; }
+  .s-icon.em { background: var(--blue-accent); }
+
+  .social-btn .s-text { text-align: left; }
+  .social-btn .s-label { display: block; font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 400; }
+
+  .social-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .btn-whatsapp {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #25d366;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 14px 20px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-whatsapp:hover {
+    background: #20b858;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+  }
+
+  .btn-voltar {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--white-border);
+    color: rgba(255,255,255,0.7);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-voltar:hover {
+    border-color: rgba(255,255,255,0.4);
+    color: white;
+  }
+
+  @media (max-width: 400px) {
+    .social-actions { flex-direction: column; }
   }
 </style>
 </head>
 <body>
+<canvas id="confetti-canvas"></canvas>
 <div class="container">
 
   <header>
@@ -673,7 +903,7 @@
   <div id="screen-result" class="screen">
     <div class="result-card">
       <div class="result-header">
-        <div class="result-label">Seu perfil é</div>
+        <div class="result-label" id="result-label">Seu perfil é</div>
         <div class="result-emoji" id="result-emoji"></div>
         <div class="result-profile-name" id="result-name"></div>
         <div class="result-tagline" id="result-tagline"></div>
@@ -686,11 +916,73 @@
           <div class="chart-bars" id="chart-bars"></div>
         </div>
       </div>
-      <div class="result-footer">
-        <div class="lae-badge">
-          <img src="logo.png" alt="LAE Liga Acadêmica Empresarial" onerror="this.style.display='none'">
+      <div style="height:1px; background: rgba(255,255,255,0.12); margin: 0 28px;"></div>
+      <div style="padding: 24px 28px 28px; display: flex; gap: 10px;">
+        <button onclick="compartilharWhatsApp()" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; padding:14px 18px; border-radius:50px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.4)';this.style.color='white'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.85)'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.107 1.51 5.833L.036 23.5l5.817-1.458A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.367l-.36-.214-3.713.93.988-3.61-.234-.37A9.818 9.818 0 1112 21.818z"/></svg>
+          Compartilhar resultado
+        </button>
+        <button class="btn-primary" style="flex: 1; padding: 14px 18px; font-size: 14px;" onclick="showScreen('social')">
+          Continuar →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA SOCIAL -->
+  <div id="screen-social" class="screen">
+    <div class="social-card">
+      <div class="social-header">
+        <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:900; color:white; margin-bottom:8px;">Obrigado por participar!</div>
+        <p>Esperamos que tenha gostado do quiz. Nos acompanhe nas redes e fique por dentro de tudo da Liga Acadêmica Empresarial!</p>
+      </div>
+      <div class="social-body">
+        <div class="social-title">Siga a LAE</div>
+        <div class="social-subtitle">Eventos, workshops e muito mais</div>
+
+        <div class="social-links">
+          <a class="social-btn" href="https://instagram.com/lae.unisal" target="_blank">
+            <span class="s-icon ig">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </span>
+            <span class="s-text">
+              @lae.unisal
+              <span class="s-label">Instagram</span>
+            </span>
+          </a>
+          <a class="social-btn" href="https://www.linkedin.com/company/lae-unisal" target="_blank">
+            <span class="s-icon li">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </span>
+            <span class="s-text">
+              LAE UNISAL
+              <span class="s-label">LinkedIn</span>
+            </span>
+          </a>
+          <a class="social-btn" href="mailto:rp.laeunisal@gmail.com">
+            <span class="s-icon em">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.9.732-1.636 1.636-1.636h.749L12 11.273l9.615-7.452h.749A1.636 1.636 0 0124 5.457z"/></svg>
+            </span>
+            <span class="s-text">
+              rp.laeunisal@gmail.com
+              <span class="s-label">E-mail</span>
+            </span>
+          </a>
+          <a class="social-btn" href="https://wa.me/5512987083830">
+            <span class="s-icon wa">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.107 1.51 5.833L.036 23.5l5.817-1.458A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.367l-.36-.214-3.713.93.988-3.61-.234-.37A9.818 9.818 0 1112 21.818z"/></svg>
+            </span>
+            <span class="s-text">
+              (12) 98708-3830
+              <span class="s-label">WhatsApp</span>
+            </span>
+          </a>
         </div>
-        <button class="btn-restart" onclick="restartQuiz()">↺ Refazer</button>
+
+        <div class="social-actions">
+          <button class="btn-voltar" onclick="showScreen('result')">← Ver resultado</button>
+          <button class="btn-voltar" onclick="restartQuiz()" style="background: linear-gradient(135deg, var(--blue-accent), var(--blue-light)); border: none; color: white;">↺ Refazer quiz</button>
+        </div>
       </div>
     </div>
   </div>
@@ -867,6 +1159,8 @@ const QUESTOES = [
 // =============================================
 let currentQ = 0;
 let respostas = {};
+let nomeUsuario = '';
+let slideDirection = 'right'; // direção da transição
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -876,36 +1170,67 @@ function showScreen(id) {
 function startQuiz() {
   currentQ = 0;
   respostas = {};
+  slideDirection = 'right';
   renderQuestion();
   showScreen('quiz');
 }
 
-function renderQuestion() {
+function renderQuestion(animate, direction) {
   const q = QUESTOES[currentQ];
-  document.getElementById('q-number').textContent = `Questão ${String(currentQ + 1).padStart(2, '0')}`;
-  document.getElementById('q-text').textContent = q.texto;
-  document.getElementById('prog-count').textContent = `${currentQ + 1} / ${QUESTOES.length}`;
-  document.getElementById('prog-fill').style.width = `${((currentQ + 1) / QUESTOES.length) * 100}%`;
+  const card = document.querySelector('.question-card');
 
-  const list = document.getElementById('options-list');
-  list.innerHTML = '';
-  const letras = ['A', 'B', 'C', 'D'];
+  const doRender = () => {
+    document.getElementById('q-number').textContent = `Questão ${String(currentQ + 1).padStart(2, '0')}`;
+    document.getElementById('q-text').textContent = q.texto;
+    document.getElementById('prog-count').textContent = `${currentQ + 1} / ${QUESTOES.length}`;
+    document.getElementById('prog-fill').style.width = `${((currentQ + 1) / QUESTOES.length) * 100}%`;
 
-  q.opcoes.forEach((op, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn' + (respostas[currentQ] === i ? ' selected' : '');
-    btn.innerHTML = `<span class="option-letter">${letras[i]}</span><span>${op.texto}</span>`;
-    btn.onclick = () => selectOption(i);
-    list.appendChild(btn);
-  });
+    const list = document.getElementById('options-list');
+    list.innerHTML = '';
+    const letras = ['A', 'B', 'C', 'D'];
 
-  updateNextBtn();
-  document.querySelector('.btn-ghost').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+    q.opcoes.forEach((op, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn' + (respostas[currentQ] === i ? ' selected' : '');
+      btn.innerHTML = `<span class="option-letter">${letras[i]}</span><span>${op.texto}</span>`;
+      btn.onclick = () => selectOption(i);
+      list.appendChild(btn);
+    });
+
+    updateNextBtn();
+    document.querySelector('.btn-ghost').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+
+    // Slide in
+    if (animate) {
+      const inClass = direction === 'right' ? 'slide-in-right' : 'slide-in-left';
+      card.classList.add(inClass);
+      card.addEventListener('animationend', () => card.classList.remove(inClass), { once: true });
+    }
+  };
+
+  // Slide out primeiro, depois renderiza
+  if (animate) {
+    const outClass = direction === 'right' ? 'slide-out-left' : 'slide-out-right';
+    card.classList.add(outClass);
+    card.addEventListener('animationend', () => {
+      card.classList.remove(outClass);
+      doRender();
+    }, { once: true });
+  } else {
+    doRender();
+  }
 }
 
 function selectOption(idx) {
   respostas[currentQ] = idx;
-  document.querySelectorAll('.option-btn').forEach((b, i) => b.classList.toggle('selected', i === idx));
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === idx);
+    if (i === idx) {
+      b.classList.remove('pulse');
+      void b.offsetWidth; // reflow pra reiniciar animação
+      b.classList.add('pulse');
+    }
+  });
   updateNextBtn();
 }
 
@@ -917,12 +1242,19 @@ function updateNextBtn() {
 
 function nextQuestion() {
   if (respostas[currentQ] === undefined) return;
-  if (currentQ < QUESTOES.length - 1) { currentQ++; renderQuestion(); }
-  else calcularResultado();
+  if (currentQ < QUESTOES.length - 1) {
+    currentQ++;
+    renderQuestion(true, 'right');
+  } else {
+    calcularResultado();
+  }
 }
 
 function prevQuestion() {
-  if (currentQ > 0) { currentQ--; renderQuestion(); }
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion(true, 'left');
+  }
 }
 
 function calcularResultado() {
@@ -954,6 +1286,9 @@ function calcularResultado() {
 }
 
 function mostrarResultado(perfil, pontos, chaveVencedor) {
+  perfilAtual = perfil.nome;
+  PERFIS_CACHE = perfil;
+  document.getElementById('result-label').textContent = 'Seu perfil é';
   document.getElementById('result-emoji').textContent = perfil.emoji;
   document.getElementById('result-name').textContent = perfil.nome;
   document.getElementById('result-tagline').textContent = perfil.tagline;
@@ -980,6 +1315,7 @@ function mostrarResultado(perfil, pontos, chaveVencedor) {
   }).join('');
 
   showScreen('result');
+  dispararConfete();
 
   // Anima barras após render
   requestAnimationFrame(() => {
@@ -992,6 +1328,222 @@ function mostrarResultado(perfil, pontos, chaveVencedor) {
 }
 
 function restartQuiz() { startQuiz(); }
+
+// =============================================
+// SALVAR IMAGEM DO RESULTADO
+// =============================================
+function salvarImagem() {
+  const canvas = document.createElement('canvas');
+  const W = 1080, H = 1350;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Fundo gradiente
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0a1f44');
+  bg.addColorStop(0.5, '#1a3a6e');
+  bg.addColorStop(1, '#0a1f44');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Círculo decorativo topo
+  ctx.beginPath();
+  ctx.arc(W * 0.85, -60, 320, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(30,90,191,0.25)';
+  ctx.fill();
+
+  // Círculo decorativo fundo
+  ctx.beginPath();
+  ctx.arc(W * 0.1, H + 80, 280, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(91,158,255,0.1)';
+  ctx.fill();
+
+  // Card central
+  const cardX = 80, cardY = 200, cardW = W - 160, cardH = H - 340;
+  ctx.save();
+  roundRect(ctx, cardX, cardY, cardW, cardH, 48);
+  ctx.fillStyle = 'rgba(255,255,255,0.06)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+
+  // Header do card
+  const hdrGrad = ctx.createLinearGradient(cardX, cardY, cardX + cardW, cardY + 420);
+  hdrGrad.addColorStop(0, '#1a3a6e');
+  hdrGrad.addColorStop(1, '#1e5abf');
+  ctx.save();
+  roundRectTop(ctx, cardX, cardY, cardW, 420, 48);
+  ctx.fillStyle = hdrGrad;
+  ctx.fill();
+  ctx.restore();
+
+  // "Seu perfil é"
+  ctx.font = '500 38px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.textAlign = 'center';
+  ctx.fillText('Seu perfil é', W / 2, cardY + 80);
+
+  // Emoji grande
+  ctx.font = '140px Arial';
+  ctx.fillText(perfilAtual ? PERFIS_CACHE.emoji : '🌟', W / 2, cardY + 240);
+
+  // Nome do perfil
+  ctx.font = 'bold 72px Arial';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(PERFIS_CACHE.nome, W / 2, cardY + 340);
+
+  // Tagline
+  ctx.font = '400 38px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  wrapText(ctx, PERFIS_CACHE.tagline, W / 2, cardY + 405, cardW - 80, 50);
+
+  // Linha dourada
+  ctx.fillStyle = '#c9a84c';
+  ctx.fillRect(cardX + 80, cardY + 490, cardW - 160, 3);
+
+  // Descrição
+  ctx.font = '400 34px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.82)';
+  ctx.textAlign = 'center';
+  wrapText(ctx, PERFIS_CACHE.descricao, W / 2, cardY + 560, cardW - 120, 52);
+
+  // Traços — pills
+  const tracos = PERFIS_CACHE.tracos.slice(0, 6);
+  const pillW = 280, pillH = 58, pillGap = 20;
+  const pillStartX = cardX + (cardW - (pillW * 2 + pillGap)) / 2;
+  tracos.forEach((t, i) => {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const px = pillStartX + col * (pillW + pillGap);
+    const py = cardY + 880 + row * (pillH + pillGap);
+    ctx.save();
+    roundRect(ctx, px, py, pillW, pillH, 29);
+    ctx.fillStyle = 'rgba(91,158,255,0.15)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(91,158,255,0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+    ctx.font = '500 26px Arial';
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.textAlign = 'center';
+    ctx.fillText(t, px + pillW / 2, py + 37);
+  });
+
+  // Rodapé — linha + LAE
+  const footerY = H - 120;
+  ctx.fillStyle = 'rgba(255,255,255,0.1)';
+  ctx.fillRect(80, footerY, W - 160, 1);
+
+  ctx.font = 'bold 36px Arial';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText('🐘 LAE UNISAL • lae-quiz.vercel.app', W / 2, footerY + 56);
+
+  // Download
+  const link = document.createElement('a');
+  link.download = `meu-perfil-lae-${PERFIS_CACHE.nome.replace(/\s+/g, '-').toLowerCase()}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// Helpers canvas
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function roundRectTop(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineH) {
+  const words = text.split(' ');
+  let line = '';
+  let cy = y;
+  words.forEach((word, i) => {
+    const test = line + word + ' ';
+    if (ctx.measureText(test).width > maxWidth && i > 0) {
+      ctx.fillText(line.trim(), x, cy);
+      line = word + ' ';
+      cy += lineH;
+    } else {
+      line = test;
+    }
+  });
+  ctx.fillText(line.trim(), x, cy);
+}
+
+function compartilharWhatsApp() {
+  const texto = 'Fiz o Quiz de Perfil Empresarial da LAE UNISAL e descobri que sou: *' + perfilAtual + '*!\n\nDescubra o seu tambem: https://lae-quiz.vercel.app';
+  window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+}
+
+// =============================================
+// CONFETE
+// =============================================
+function dispararConfete() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const cores = ['#1e5abf', '#5b9eff', '#c9a84c', '#e8c97a', '#ffffff', '#3b7dd8'];
+  const particulas = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20,
+    w: Math.random() * 10 + 5,
+    h: Math.random() * 5 + 3,
+    color: cores[Math.floor(Math.random() * cores.length)],
+    rot: Math.random() * Math.PI * 2,
+    vx: (Math.random() - 0.5) * 3,
+    vy: Math.random() * 4 + 2,
+    vrot: (Math.random() - 0.5) * 0.2,
+    alpha: 1
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particulas.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vrot;
+      if (frame > 80) p.alpha -= 0.012;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 160) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
 </script>
 </body>
 </html>
