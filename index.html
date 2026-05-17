@@ -354,7 +354,6 @@
   .option-btn:hover {
     background: rgba(91,158,255,0.12);
     border-color: rgba(91,158,255,0.4);
-    transform: translateX(4px);
   }
 
   .option-btn.selected {
@@ -1165,6 +1164,7 @@ let slideDirection = 'right'; // direção da transição
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
+  document.querySelector('.header-text').style.display = id === 'social' ? 'none' : '';
 }
 
 function startQuiz() {
@@ -1495,7 +1495,7 @@ function wrapText(ctx, text, x, y, maxWidth, lineH) {
 }
 
 function compartilharWhatsApp() {
-  const texto = 'Fiz o Quiz de Perfil Empresarial da LAE UNISAL e descobri que sou: *' + perfilAtual + '*!\n\nDescubra o seu tambem: https://lae-quiz.vercel.app';
+  const texto = 'Fiz o Quiz de Perfil Empresarial da LAE UNISAL e descobri que sou: *' + perfilAtual + '*!\n\nDescobre o seu tambem: https://lae-quiz.vercel.app';
   window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
 }
 
