@@ -1001,7 +1001,7 @@
 
 </div>
 
-<script>
+<script type="module">
 // =============================================
 // PERFIS PRINCIPAIS
 // =============================================
@@ -1346,25 +1346,39 @@ function mostrarResultado(perfil, pontos, chaveVencedor) {
 function restartQuiz() { startQuiz(); }
 
 // =============================================
-// STORAGE — SALVAR E LER DADOS DA FEIRA
+// FIREBASE — SALVAR DADOS DA FEIRA
 // =============================================
-const STORAGE_KEY = 'lae_quiz_stats';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, increment, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-function carregarStats() {
+const firebaseConfig = {
+  apiKey: "AIzaSyD_ftiIZ0kn4fRWhiEJRtVURVz6UbihJ9c",
+  authDomain: "lae-quiz.firebaseapp.com",
+  projectId: "lae-quiz",
+  storageBucket: "lae-quiz.firebasestorage.app",
+  messagingSenderId: "964612644885",
+  appId: "1:964612644885:web:d25c04f580a29dcb00ae1c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const STATS_REF = doc(db, 'feira', 'stats');
+
+async function salvarStats(chave) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { total: 0, perfis: { visionario: 0, lider: 0, criativo: 0, analista: 0 } };
-  } catch(e) {
-    return { total: 0, perfis: { visionario: 0, lider: 0, criativo: 0, analista: 0 } };
-  }
-}
-
-function salvarStats(chave) {
-  const stats = carregarStats();
-  stats.total++;
-  if (chave && stats.perfis[chave] !== undefined) stats.perfis[chave]++;
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch(e) {}
-  return stats;
+    const snap = await getDoc(STATS_REF);
+    if (!snap.exists()) {
+      await setDoc(STATS_REF, {
+        total: 1,
+        visionario: 0, lider: 0, criativo: 0, analista: 0,
+        [chave]: 1
+      });
+    } else {
+      const updates = { total: increment(1) };
+      if (chave) updates[chave] = increment(1);
+      await updateDoc(STATS_REF, updates);
+    }
+  } catch(e) { console.error('Firebase error:', e); }
 }
 
 // =============================================
@@ -1582,6 +1596,14 @@ function dispararConfete() {
   }
   draw();
 }
+
+// Bind global functions para HTML (necessário com type="module")
+window.startQuiz = startQuiz;
+window.nextQuestion = nextQuestion;
+window.prevQuestion = prevQuestion;
+window.restartQuiz = restartQuiz;
+window.compartilharWhatsApp = compartilharWhatsApp;
+window.showScreen = showScreen;
 </script>
 </body>
 </html>

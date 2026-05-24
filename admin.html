@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Admin - LAE Quiz</title>
+<title>Painel Admin — LAE Quiz</title>
 <link rel="icon" type="image/png" href="icon elefante.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -308,9 +308,24 @@
 
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD_ftiIZ0kn4fRWhiEJRtVURVz6UbihJ9c",
+  authDomain: "lae-quiz.firebaseapp.com",
+  projectId: "lae-quiz",
+  storageBucket: "lae-quiz.firebasestorage.app",
+  messagingSenderId: "964612644885",
+  appId: "1:964612644885:web:d25c04f580a29dcb00ae1c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const STATS_REF = doc(db, 'feira', 'stats');
+
 const SENHA = 'Lae2026#';
-const STORAGE_KEY = 'lae_quiz_stats';
 
 const PERFIS_INFO = {
   visionario: { nome: 'Empreendedor Visionário', emoji: '🌟' },
@@ -319,37 +334,39 @@ const PERFIS_INFO = {
   analista:   { nome: 'Executor Analítico',       emoji: '📊' }
 };
 
-function entrar() {
+window.entrar = function() {
   const val = document.getElementById('senha-input').value;
   if (val === SENHA) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-panel').style.display = 'block';
     renderAdmin();
-    setInterval(renderAdmin, 10000); // atualiza a cada 10s
+    setInterval(renderAdmin, 10000);
   } else {
     document.getElementById('error-msg').style.display = 'block';
     document.getElementById('senha-input').value = '';
   }
 }
 
-function carregarStats() {
+async function carregarStats() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { total: 0, perfis: { visionario: 0, lider: 0, criativo: 0, analista: 0 } };
+    const snap = await getDoc(STATS_REF);
+    if (!snap.exists()) return { total: 0, visionario: 0, lider: 0, criativo: 0, analista: 0 };
+    return snap.data();
   } catch(e) {
-    return { total: 0, perfis: { visionario: 0, lider: 0, criativo: 0, analista: 0 } };
+    return { total: 0, visionario: 0, lider: 0, criativo: 0, analista: 0 };
   }
 }
 
-function renderAdmin() {
-  const stats = carregarStats();
-  document.getElementById('total-num').textContent = stats.total;
+async function renderAdmin() {
+  const stats = await carregarStats();
+  document.getElementById('total-num').textContent = stats.total || 0;
 
   const total = stats.total || 1;
-  const sorted = Object.entries(stats.perfis).sort((a, b) => b[1] - a[1]);
+  const perfisKeys = ['visionario', 'lider', 'criativo', 'analista'];
+  const sorted = perfisKeys.map(k => [k, stats[k] || 0]).sort((a, b) => b[1] - a[1]);
   const topKey = sorted[0][0];
 
-  document.getElementById('perfis-grid').innerHTML = sorted.map(([key, count], i) => {
+  document.getElementById('perfis-grid').innerHTML = sorted.map(([key, count]) => {
     const info = PERFIS_INFO[key];
     const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
     const isTop = key === topKey && stats.total > 0;
@@ -370,9 +387,11 @@ function renderAdmin() {
   }).join('');
 }
 
-function resetarDados() {
+window.renderAdmin = renderAdmin;
+
+window.resetarDados = async function() {
   if (confirm('Tem certeza que quer zerar todos os dados? Essa ação não pode ser desfeita.')) {
-    localStorage.removeItem(STORAGE_KEY);
+    await setDoc(STATS_REF, { total: 0, visionario: 0, lider: 0, criativo: 0, analista: 0 });
     renderAdmin();
   }
 }
