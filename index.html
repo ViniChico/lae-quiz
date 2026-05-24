@@ -1003,6 +1003,35 @@
 
 <script type="module">
 // =============================================
+// FIREBASE — SALVAR DADOS DA FEIRA
+// =============================================
+let db = null;
+let STATS_REF = null;
+
+async function iniciarFirebase() {
+  try {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getFirestore, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_ftiIZ0kn4fRWhiEJRtVURVz6UbihJ9c",
+      authDomain: "lae-quiz.firebaseapp.com",
+      projectId: "lae-quiz",
+      storageBucket: "lae-quiz.firebasestorage.app",
+      messagingSenderId: "964612644885",
+      appId: "1:964612644885:web:d25c04f580a29dcb00ae1c"
+    };
+    const app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    STATS_REF = doc(db, 'feira', 'stats');
+    window._db = db;
+    window._STATS_REF = STATS_REF;
+  } catch(e) { console.warn('Firebase nao iniciado:', e); }
+}
+iniciarFirebase();
+</script>
+
+<script>
+// =============================================
 // PERFIS PRINCIPAIS
 // =============================================
 const PERFIS = {
@@ -1346,33 +1375,13 @@ function mostrarResultado(perfil, pontos, chaveVencedor) {
 function restartQuiz() { startQuiz(); }
 
 // =============================================
-// FIREBASE — SALVAR DADOS DA FEIRA
+// SALVAR STATS — usa Firebase carregado em paralelo
 // =============================================
-let db = null;
-let STATS_REF = null;
-
-async function iniciarFirebase() {
-  try {
-    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const { getFirestore, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-    const firebaseConfig = {
-      apiKey: "AIzaSyD_ftiIZ0kn4fRWhiEJRtVURVz6UbihJ9c",
-      authDomain: "lae-quiz.firebaseapp.com",
-      projectId: "lae-quiz",
-      storageBucket: "lae-quiz.firebasestorage.app",
-      messagingSenderId: "964612644885",
-      appId: "1:964612644885:web:d25c04f580a29dcb00ae1c"
-    };
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    STATS_REF = doc(db, 'feira', 'stats');
-  } catch(e) { console.warn('Firebase nao iniciado:', e); }
-}
-iniciarFirebase();
-
 async function salvarStats(chave) {
-  if (!db || !STATS_REF) return;
   try {
+    const db = window._db;
+    const STATS_REF = window._STATS_REF;
+    if (!db || !STATS_REF) return;
     const { getDoc, setDoc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
     const snap = await getDoc(STATS_REF);
     if (!snap.exists()) {
@@ -1601,14 +1610,7 @@ function dispararConfete() {
   draw();
 }
 
-// Bind global functions para HTML (necessário com type="module")
-window.startQuiz = startQuiz;
-window.nextQuestion = nextQuestion;
-window.prevQuestion = prevQuestion;
-window.restartQuiz = restartQuiz;
-window.compartilharWhatsApp = compartilharWhatsApp;
-window.showScreen = showScreen;
-window.selectOption = selectOption;
+// Fim do script
 </script>
 </body>
 </html>
