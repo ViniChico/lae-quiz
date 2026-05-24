@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin - LAE Quiz</title>
+<link rel="icon" type="image/png" href="icon elefante.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0a1f44;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30,90,191,0.35) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+    padding: 24px 20px 60px;
+  }
+
+  /* LOGIN */
+  #login-screen {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+  }
+
+  #login-screen img {
+    width: 140px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: brightness(0) invert(1);
+  }
+
+  #login-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  #login-screen p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 28px;
+  }
+
+  .input-field {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: white;
+    outline: none;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+
+  .input-field:focus { border-color: #5b9eff; }
+  .input-field::placeholder { letter-spacing: 0; color: rgba(255,255,255,0.3); }
+
+  .btn-login {
+    width: 100%;
+    background: linear-gradient(135deg, #1e5abf, #3b7dd8);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-login:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .error-msg {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+  }
+
+  /* PAINEL */
+  #admin-panel { display: none; }
+
+  .admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    gap: 12px;
+  }
+
+  .admin-header img {
+    width: 100px;
+    filter: brightness(0) invert(1);
+  }
+
+  .admin-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    flex: 1;
+  }
+
+  .btn-reset {
+    background: transparent;
+    border: 1px solid rgba(255,100,100,0.4);
+    color: rgba(255,100,100,0.8);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-reset:hover {
+    background: rgba(255,100,100,0.1);
+    border-color: rgba(255,100,100,0.7);
+    color: #ff6b6b;
+  }
+
+  .stat-total {
+    background: linear-gradient(135deg, #1a3a6e, #1e5abf);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .stat-total .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+  }
+
+  .stat-total .label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .perfis-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .perfil-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+
+  .perfil-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .perfil-nome {
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .perfil-count {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .perfil-pct {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e8c97a;
+  }
+
+  .bar-track {
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #1e5abf, #5b9eff);
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  .bar-fill.top { background: linear-gradient(90deg, #c9a84c, #e8c97a); }
+
+  .divider-line {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 20px 0;
+  }
+
+  .update-info {
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .btn-refresh {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    margin: 12px auto 0;
+  }
+
+  .btn-refresh:hover { border-color: rgba(255,255,255,0.4); color: white; }
+
+  .badge-lider {
+    display: inline-block;
+    background: rgba(201,168,76,0.2);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: #e8c97a;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <img src="logo.png" alt="LAE">
+    <h2>Painel da Feira</h2>
+    <p>Acesso restrito à equipe LAE</p>
+    <input class="input-field" id="senha-input" type="password" placeholder="Digite a senha" onkeydown="if(event.key==='Enter') entrar()">
+    <button class="btn-login" onclick="entrar()">Entrar →</button>
+    <div class="error-msg" id="error-msg">Senha incorreta. Tente novamente.</div>
+  </div>
+
+  <!-- PAINEL -->
+  <div id="admin-panel">
+    <div class="admin-header">
+      <img src="logo.png" alt="LAE">
+      <h1>Resultados da Feira</h1>
+      <button class="btn-reset" onclick="resetarDados()">🗑 Zerar</button>
+    </div>
+
+    <div class="stat-total">
+      <div class="num" id="total-num">0</div>
+      <div class="label">Participantes</div>
+    </div>
+
+    <div class="perfis-grid" id="perfis-grid"></div>
+
+    <div class="divider-line"></div>
+    <div class="update-info">Dados atualizados em tempo real</div>
+    <button class="btn-refresh" onclick="renderAdmin()">↺ Atualizar</button>
+  </div>
+
+</div>
+
+<script>
+const SENHA = 'Lae2026#';
+const STORAGE_KEY = 'lae_quiz_stats';
+
+const PERFIS_INFO = {
+  visionario: { nome: 'Empreendedor Visionário', emoji: '🌟' },
+  lider:      { nome: 'Líder Estratégico',       emoji: '♟️' },
+  criativo:   { nome: 'Inovador Criativo',        emoji: '🎨' },
+  analista:   { nome: 'Executor Analítico',       emoji: '📊' }
+};
+
+function entrar() {
+  const val = document.getElementById('senha-input').value;
+  if (val === SENHA) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    renderAdmin();
+    setInterval(renderAdmin, 10000); // atualiza a cada 10s
+  } else {
+    document.getElementById('error-msg').style.display = 'block';
+    document.getElementById('senha-input').value = '';
+  }
+}
+
+function carregarStats() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : { total: 0, perfis: { visionario: 0, lider: 0, criativo: 0, analista: 0 } };
+  } catch(e) {
+    return { total: 0, perfis: { visionario: 0, lider: 0, criativo: 0, analista: 0 } };
+  }
+}
+
+function renderAdmin() {
+  const stats = carregarStats();
+  document.getElementById('total-num').textContent = stats.total;
+
+  const total = stats.total || 1;
+  const sorted = Object.entries(stats.perfis).sort((a, b) => b[1] - a[1]);
+  const topKey = sorted[0][0];
+
+  document.getElementById('perfis-grid').innerHTML = sorted.map(([key, count], i) => {
+    const info = PERFIS_INFO[key];
+    const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
+    const isTop = key === topKey && stats.total > 0;
+    return `
+      <div class="perfil-card">
+        <div class="perfil-top">
+          <span class="perfil-nome">
+            ${info.emoji} ${info.nome}
+            ${isTop ? '<span class="badge-lider">Mais comum</span>' : ''}
+          </span>
+          <span class="perfil-pct">${pct}%</span>
+        </div>
+        <div class="perfil-count" style="margin-bottom:8px;">${count} ${count === 1 ? 'pessoa' : 'pessoas'}</div>
+        <div class="bar-track">
+          <div class="bar-fill ${isTop ? 'top' : ''}" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function resetarDados() {
+  if (confirm('Tem certeza que quer zerar todos os dados? Essa ação não pode ser desfeita.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    renderAdmin();
+  }
+}
+</script>
+</body>
+</html>
